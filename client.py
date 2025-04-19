@@ -1,4 +1,4 @@
-import requests # HTTP requests library
+import requests # HTTP requests 
 
 URL = "http://127.0.0.1:5000/v1/chat/completions" # Same endpoint as the server
 

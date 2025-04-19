@@ -10,10 +10,20 @@ app = Flask(__name__) # Flask class instance
 def fakeChatCompletion(): # Executed once a POST is made to the URL        
         
 
-        try: # VALIDATION
+        try:
             data = request.get_json() # Get the JSON data from the request body
             logging.info(f"Request: {data}") # Log the data
 
+            # Validation for JSON keys
+            REQUIRED_KEYS = {'model', 'messages'}
+            OPTIONAL_KEYS = {"temperature", "top_p", "n", "stream", "stop",
+            "max_tokens", "presence_penalty", "frequency_penalty",
+            "logit_bias", "user", "seed"} # Most arent used, but are supported by the OpenAI API.
+            ALLOWED_KEYS =  REQUIRED_KEYS | OPTIONAL_KEYS
+            UNKNOWN_KEYS = set(data.keys()) - ALLOWED_KEYS
+            if UNKNOWN_KEYS:
+                return f"Invalid keys: {', '.join(UNKNOWN_KEYS)}", 400
+            
             # JSON validation
             if 'model' not in data:
                  return "AI Model is missing.", 400
@@ -52,6 +62,7 @@ def fakeChatCompletion(): # Executed once a POST is made to the URL
                     "total_tokens": 21, 
                 }
             }
+            
             return jsonify(response) # response --> JSON, to be sent back to the client
        
         except Exception as e:
