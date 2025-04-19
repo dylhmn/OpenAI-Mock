@@ -36,9 +36,9 @@ def fakeChatCompletion(): # Executed once a POST is made to the URL
                 return "Prompt shouldn't be empty.", 400
 
 
-            if data.get("stream", True):
+            if data.get("stream", False): # If true, streams data.
                 def generateStream():
-                # Each yield is a stream chunk, prefixed with `data: `
+                # Yield = stream chunk, prefixed  `data: `
                  yield 'data: {"id":"chatcmpl-123","choices":[{"delta":{"role":"assistant"},"index":0}]}\n\n'
                  yield 'data: {"choices":[{"delta":{"content":"Hello"},"index":0}]}\n\n'
                  time.sleep(0.3)
