@@ -12,6 +12,7 @@ payload = { # The request body, similar to what OpenAI API would recieve.
         }
         ],
     "temperature": 0.7, # Controls randomness in the output. 0 = deterministic, 1 = random
+    "stream": False, # If True, the response will be streamed back in chunks
 }
 
 response = requests.post(URL, json=payload) # Sends post request to the server and will contain the server's output.

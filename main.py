@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 # Flask class (Web framework), request (to handle incoming requests), jsonify (converts Python objects to JSON)
-import logging # Debugging library
+import logging, time # Debugging library / Response stream
 
 logging.basicConfig(level=logging.INFO) # Set logging level/severity to INFO
 
@@ -24,25 +24,36 @@ def fakeChatCompletion(): # Executed once a POST is made to the URL
             if UNKNOWN_KEYS:
                 return f"Invalid keys: {', '.join(UNKNOWN_KEYS)}", 400
             
-            # JSON validation
-            if 'model' not in data:
+        
+            if 'model' not in data: # JSON validation
                  return "AI Model is missing.", 400
             if 'messages' not in data:
                  return "A message is missing.", 400
             if 'temperature' not in data:
                  return "Randomness not identified.", 400
             
-            # Message validation
-            if len(data['messages']) == 0:
+            if len(data['messages']) == 0: # Message validation
                 return "Prompt shouldn't be empty.", 400
 
-            # Server mock response JSON, returned from a client's POST request.
-            response = {
+
+            if data.get("stream", True):
+                def generateStream():
+                # Each yield is a stream chunk, prefixed with `data: `
+                 yield 'data: {"id":"chatcmpl-123","choices":[{"delta":{"role":"assistant"},"index":0}]}\n\n'
+                 yield 'data: {"choices":[{"delta":{"content":"Hello"},"index":0}]}\n\n'
+                 time.sleep(0.3)
+                 yield 'data: {"choices":[{"delta":{"content":" there"},"index":0}]}\n\n'
+                 time.sleep(0.3)
+                 yield 'data: {"choices":[{"delta":{"content":"!"},"index":0}]}\n\n'
+                 yield 'data: [DONE]\n\n'
+                 return Response(generateStream(), content_type='text/event-stream')
+        
+            response = { # Server mock response JSON, returned from a client's POST request.
                 "id": "chatcmpl-123", # ID for each request
                 "object": "chat.completion",  # Object type
                 "created": 1677652288,  # Timestamp
                 "model": "gpt-4o-mini",
-                "system_fingerprint": "fp_44709d6fcb",  # identifier for the system
+                "system_fingerprint": "fp_44709d6fcb",  # Identifier for the system
                 
                 "choices": [ # AI Assistant's response 
                 {
@@ -62,7 +73,6 @@ def fakeChatCompletion(): # Executed once a POST is made to the URL
                     "total_tokens": 21, 
                 }
             }
-            
             return jsonify(response) # response --> JSON, to be sent back to the client
        
         except Exception as e:
