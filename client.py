@@ -5,15 +5,16 @@ URL = "http://127.0.0.1:5000/v1/chat/completions" # Same endpoint as the server
 payload = { # The request body, similar to what OpenAI API would recieve.
     "model": "gpt-4o-mini",
     "messages": 
-    [
+    [        
         {
             "role": "user",
             "content": "Hello, how are you?"
         }
-    ]
+        ],
+    "temperature": 0.7, # Controls randomness in the output. 0 = deterministic, 1 = random
 }
 
-response = requests.post(URL, json=payload)
+response = requests.post(URL, json=payload) # Sends post request to the server and will contain the server's output.
 print("Status Code: ",response.status_code)  # Print the status code of the response
 print("Response JSON:",response.json())  # Print the JSON response from the server
 
