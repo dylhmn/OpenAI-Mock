@@ -1,35 +1,40 @@
 from flask import Flask, request, jsonify
+# Flask class (Web framework), request (to handle incoming requests), jsonify (converts Python objects to JSON)
 
-app = Flask(__name__)
+app = Flask(__name__) # Flask class instance
 
-@app.route('/v1/chat/completions', methods=['POST']) # Associates the function and URL / POST = Data submission to a server
-def fakeChatCompletion():
-        print("Request recieved")
+@app.route('/v1/chat/completions', methods=['POST']) # Maps the function to the URL. / POST = Data submission to a server
+def fakeChatCompletion(): # Executed once a POST is made to the URL
+        
+        print("Request recieved") # Debugging
 
-
-        response = {
-            "id": "chatcmpl-123", 
-            "object": "chat.completion", 
-            "created": 1677652288,  # mock timestamp, can be generated dynamically
-            "model": "gpt-4o-mini",  # mock model
-            "system_fingerprint": "fp_44709d6fcb",  # mock fingerprint
-            "choices": [{
+        response = { # Mock response that a server returns once a POST is made.
+            
+            "id": "chatcmpl-123", # ID for each request
+            "object": "chat.completion",  # Object type
+            "created": 1677652288,  # Timestamp
+            "model": "gpt-4o-mini",
+            "system_fingerprint": "fp_44709d6fcb",  # identifier for the system
+            
+            "choices": [ # AI Assistant's response 
+            {
                 "index": 0, 
-                "message": {
+                "message": # Message
+                {
                     "role": "assistant", 
-                    "content": "Hello there, how may I assist you today?", 
-                    "logprobs": None,  # this can be null, or you can fake it
-                    "finish_reason": "stop" 
+                    "content": "Hello there, how may I assist you today?",
+                    "finish_reason": "stop" # The way the model stopped generating. "stop" = naturally
                 }
             }],
-            "usage": {
-                "prompt_tokens": 9, 
-                "completion_tokens": 12, 
+
+            "usage": 
+            {
+                "prompt_tokens": 9, # Input tokens (words) 
+                "completion_tokens": 12, # Output tokens (words)
                 "total_tokens": 21, 
-                "completion_tokens_details": {
-                    "reasoning_tokens": 0  # example of detailed usage info
-                }
             }
         }
+        return jsonify(response) # Converts the response to JSON format, to be sent back to the client
 
-        return jsonify(response)
+if __name__ == '__main__':
+    app.run(debug=True)
