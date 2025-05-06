@@ -2,7 +2,7 @@
 
 This is a test stub service in place of an actual service (OpenAI API) as to avoid API keys and incurring costs. 
 
-It simulates the '/v1/chat/completions' endpoint with validation and static JSON formatting, scripting a client-server communication emulating the actual service.
+It simulates the '/v1/chat/completions' endpoint, a client-server communication emulating the actual service.
 
 # Dependencies
 
